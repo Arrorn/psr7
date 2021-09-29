@@ -24,7 +24,7 @@ class Request implements RequestInterface
      * @param string|resource|StreamInterface|null $body Request body
      * @param string $version Protocol version
      */
-    public function __construct(string $method, $uri, array $headers = [], $body = null, string $version = '1.1')
+    public function __construct( $method, $uri, array $headers = [], $body = null, $version = '1.1')
     {
         if (!($uri instanceof UriInterface)) {
             $uri = new Uri($uri);

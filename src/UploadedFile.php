@@ -16,7 +16,7 @@ use Psr\Http\Message\{StreamInterface, UploadedFileInterface};
 class UploadedFile implements UploadedFileInterface
 {
     /** @var array */
-    private const ERRORS = [
+    const ERRORS = [
         \UPLOAD_ERR_OK => 1,
         \UPLOAD_ERR_INI_SIZE => 1,
         \UPLOAD_ERR_FORM_SIZE => 1,
@@ -94,8 +94,9 @@ class UploadedFile implements UploadedFileInterface
 
     /**
      * @throws \RuntimeException if is moved or not ok
+     * @return void
      */
-    private function validateActive(): void
+    private function validateActive()
     {
         if (\UPLOAD_ERR_OK !== $this->error) {
             throw new \RuntimeException('Cannot retrieve stream due to upload error');
@@ -106,7 +107,10 @@ class UploadedFile implements UploadedFileInterface
         }
     }
 
-    public function getStream(): StreamInterface
+    /**
+     * @return StreamInterface
+     */
+    public function getStream()
     {
         $this->validateActive();
 
@@ -121,7 +125,10 @@ class UploadedFile implements UploadedFileInterface
         return Stream::create($resource);
     }
 
-    public function moveTo($targetPath): void
+    /**
+     * @param string $targetPath
+     */
+    public function moveTo($targetPath)
     {
         $this->validateActive();
 
@@ -157,22 +164,34 @@ class UploadedFile implements UploadedFileInterface
         }
     }
 
-    public function getSize(): int
+    /**
+     * @return int
+     */
+    public function getSize()
     {
         return $this->size;
     }
 
-    public function getError(): int
+    /**
+     * @return int
+     */
+    public function getError()
     {
         return $this->error;
     }
 
-    public function getClientFilename(): ?string
+    /**
+     * @return null|string
+     */
+    public function getClientFilename()
     {
         return $this->clientFilename;
     }
 
-    public function getClientMediaType(): ?string
+    /**
+     * @return null|string
+     */
+    public function getClientMediaType()
     {
         return $this->clientMediaType;
     }

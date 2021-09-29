@@ -15,12 +15,22 @@ use Psr\Http\Message\{RequestFactoryInterface, RequestInterface, ResponseFactory
  */
 class Psr17Factory implements RequestFactoryInterface, ResponseFactoryInterface, ServerRequestFactoryInterface, StreamFactoryInterface, UploadedFileFactoryInterface, UriFactoryInterface
 {
-    public function createRequest(string $method, $uri): RequestInterface
+    /**
+     * @param  string           $method
+     * @param  string|UriInterface           $uri
+     * @return RequestInterface
+     */
+    public function createRequest($method, $uri)
     {
         return new Request($method, $uri);
     }
 
-    public function createResponse(int $code = 200, string $reasonPhrase = ''): ResponseInterface
+    /**
+     * @param  integer           $code
+     * @param  string            $reasonPhrase
+     * @return ResponseInterface
+     */
+    public function createResponse($code = 200, $reasonPhrase = '')
     {
         if (2 > \func_num_args()) {
             // This will make the Response class to use a custom reasonPhrase
@@ -30,12 +40,21 @@ class Psr17Factory implements RequestFactoryInterface, ResponseFactoryInterface,
         return new Response($code, [], null, '1.1', $reasonPhrase);
     }
 
-    public function createStream(string $content = ''): StreamInterface
+    /**
+     * @param  string          $content
+     * @return StreamInterface
+     */
+    public function createStream( $content = '')
     {
         return Stream::create($content);
     }
 
-    public function createStreamFromFile(string $filename, string $mode = 'r'): StreamInterface
+    /**
+     * @param  string          $filename
+     * @param  string          $mode
+     * @return StreamInterface
+     */
+    public function createStreamFromFile( $filename, $mode = 'r')
     {
         if ('' === $filename) {
             throw new \RuntimeException('Path cannot be empty');
@@ -52,12 +71,24 @@ class Psr17Factory implements RequestFactoryInterface, ResponseFactoryInterface,
         return Stream::create($resource);
     }
 
+    /**
+     * @param  string|resource|StreamInterface          $resource
+     * @return StreamInterface
+     */
     public function createStreamFromResource($resource): StreamInterface
     {
         return Stream::create($resource);
     }
 
-    public function createUploadedFile(StreamInterface $stream, int $size = null, int $error = \UPLOAD_ERR_OK, string $clientFilename = null, string $clientMediaType = null): UploadedFileInterface
+    /**
+     * @param  StreamInterface       $stream
+     * @param  int|null                $size
+     * @param  int                $error
+     * @param  string|null                $clientFilename
+     * @param  string|null                $clientMediaType
+     * @return UploadedFileInterface
+     */
+    public function createUploadedFile(StreamInterface $stream, $size = null, $error = \UPLOAD_ERR_OK, $clientFilename = null, $clientMediaType = null)
     {
         if (null === $size) {
             $size = $stream->getSize();
@@ -66,12 +97,22 @@ class Psr17Factory implements RequestFactoryInterface, ResponseFactoryInterface,
         return new UploadedFile($stream, $size, $error, $clientFilename, $clientMediaType);
     }
 
-    public function createUri(string $uri = ''): UriInterface
+    /**
+     * @param  string       $uri
+     * @return UriInterface
+     */
+    public function createUri($uri = '')
     {
         return new Uri($uri);
     }
 
-    public function createServerRequest(string $method, $uri, array $serverParams = []): ServerRequestInterface
+    /**
+     * @param  string                 $method
+     * @param  string|UriInterface    $uri
+     * @param  array                  $serverParams
+     * @return ServerRequestInterface
+     */
+    public function createServerRequest($method, $uri, array $serverParams = [])
     {
         return new ServerRequest($method, $uri, [], null, '1.1', $serverParams);
     }

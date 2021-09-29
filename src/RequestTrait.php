@@ -24,6 +24,9 @@ trait RequestTrait
     /** @var UriInterface|null */
     private $uri;
 
+    /**
+     * @return string
+     */
     public function getRequestTarget(): string
     {
         if (null !== $this->requestTarget) {
@@ -40,7 +43,11 @@ trait RequestTrait
         return $target;
     }
 
-    public function withRequestTarget($requestTarget): self
+    /**
+     * @param  mixed $requestTarget
+     * @return self
+     */
+    public function withRequestTarget($requestTarget)
     {
         if (\preg_match('#\s#', $requestTarget)) {
             throw new \InvalidArgumentException('Invalid request target provided; cannot contain whitespace');
@@ -52,12 +59,19 @@ trait RequestTrait
         return $new;
     }
 
-    public function getMethod(): string
+    /**
+     * @return string
+     */
+    public function getMethod()
     {
         return $this->method;
     }
 
-    public function withMethod($method): self
+    /**
+     * @param  string $method
+     * @return self
+     */
+    public function withMethod($method)
     {
         if (!\is_string($method)) {
             throw new \InvalidArgumentException('Method must be a string');
@@ -69,12 +83,20 @@ trait RequestTrait
         return $new;
     }
 
-    public function getUri(): UriInterface
+    /**
+     * @return UriInterface
+     */
+    public function getUri()
     {
         return $this->uri;
     }
 
-    public function withUri(UriInterface $uri, $preserveHost = false): self
+    /**
+     * @param  UriInterface $uri
+     * @param  boolean      $preserveHost
+     * @return self
+     */
+    public function withUri(UriInterface $uri, $preserveHost = false)
     {
         if ($uri === $this->uri) {
             return $this;
@@ -90,7 +112,10 @@ trait RequestTrait
         return $new;
     }
 
-    private function updateHostFromUri(): void
+    /**
+     * @return void
+     */
+    private function updateHostFromUri()
     {
         if ('' === $host = $this->uri->getHost()) {
             return;

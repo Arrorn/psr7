@@ -36,7 +36,7 @@ class Stream implements StreamInterface
     private $size;
 
     /** @var array Hash of readable and writable stream types */
-    private const READ_WRITE_HASH = [
+    const READ_WRITE_HASH = [
         'read' => [
             'r' => true, 'w+' => true, 'r+' => true, 'x+' => true, 'c+' => true,
             'rb' => true, 'w+b' => true, 'r+b' => true, 'x+b' => true,
@@ -59,10 +59,11 @@ class Stream implements StreamInterface
      * Creates a new PSR-7 stream.
      *
      * @param string|resource|StreamInterface $body
+     * @return StreamInterface
      *
      * @throws \InvalidArgumentException
      */
-    public static function create($body = ''): StreamInterface
+    public static function create($body = '')
     {
         if ($body instanceof StreamInterface) {
             return $body;
@@ -125,7 +126,10 @@ class Stream implements StreamInterface
         }
     }
 
-    public function close(): void
+    /**
+     * @return void
+     */
+    public function close()
     {
         if (isset($this->stream)) {
             if (\is_resource($this->stream)) {
@@ -135,6 +139,9 @@ class Stream implements StreamInterface
         }
     }
 
+    /**
+     * @return resource|null
+     */
     public function detach()
     {
         if (!isset($this->stream)) {
@@ -149,6 +156,9 @@ class Stream implements StreamInterface
         return $result;
     }
 
+    /**
+     * @return array|mixed|void|bool|null
+     */
     private function getUri()
     {
         if (false !== $this->uri) {
@@ -158,7 +168,10 @@ class Stream implements StreamInterface
         return $this->uri;
     }
 
-    public function getSize(): ?int
+    /**
+     * @return int|null
+     */
+    public function getSize()
     {
         if (null !== $this->size) {
             return $this->size;
@@ -183,7 +196,10 @@ class Stream implements StreamInterface
         return null;
     }
 
-    public function tell(): int
+    /**
+     * @return int
+     */
+    public function tell()
     {
         if (!isset($this->stream)) {
             throw new \RuntimeException('Stream is detached');
@@ -196,17 +212,28 @@ class Stream implements StreamInterface
         return $result;
     }
 
-    public function eof(): bool
+    /**
+     * @return bool
+     */
+    public function eof()
     {
         return !isset($this->stream) || \feof($this->stream);
     }
 
-    public function isSeekable(): bool
+    /**
+     * @return bool
+     */
+    public function isSeekable()
     {
         return $this->seekable;
     }
 
-    public function seek($offset, $whence = \SEEK_SET): void
+    /**
+     * @param int $offset
+     * @param int $whence
+     * @return void
+     */
+    public function seek($offset, $whence = \SEEK_SET)
     {
         if (!isset($this->stream)) {
             throw new \RuntimeException('Stream is detached');
@@ -221,17 +248,27 @@ class Stream implements StreamInterface
         }
     }
 
-    public function rewind(): void
+    /**
+     * @return void
+     */
+    public function rewind()
     {
         $this->seek(0);
     }
 
-    public function isWritable(): bool
+    /**
+     * @return bool
+     */
+    public function isWritable()
     {
         return $this->writable;
     }
 
-    public function write($string): int
+    /**
+     * @param  string $string
+     * @return int
+     */
+    public function write($string)
     {
         if (!isset($this->stream)) {
             throw new \RuntimeException('Stream is detached');
@@ -251,12 +288,19 @@ class Stream implements StreamInterface
         return $result;
     }
 
-    public function isReadable(): bool
+    /**
+     * @return bool
+     */
+    public function isReadable()
     {
         return $this->readable;
     }
 
-    public function read($length): string
+    /**
+     * @param  int $length
+     * @return string
+     */
+    public function read($length)
     {
         if (!isset($this->stream)) {
             throw new \RuntimeException('Stream is detached');
@@ -273,7 +317,10 @@ class Stream implements StreamInterface
         return $result;
     }
 
-    public function getContents(): string
+    /**
+     * @return string
+     */
+    public function getContents()
     {
         if (!isset($this->stream)) {
             throw new \RuntimeException('Stream is detached');
@@ -287,7 +334,8 @@ class Stream implements StreamInterface
     }
 
     /**
-     * @return mixed
+     * @param string $key
+     * @return array|mmixed|null
      */
     public function getMetadata($key = null)
     {

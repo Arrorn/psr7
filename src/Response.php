@@ -18,7 +18,7 @@ class Response implements ResponseInterface
     use MessageTrait;
 
     /** @var array Map of standard HTTP status code/reason phrases */
-    private const PHRASES = [
+    const PHRASES = [
         100 => 'Continue', 101 => 'Switching Protocols', 102 => 'Processing',
         200 => 'OK', 201 => 'Created', 202 => 'Accepted', 203 => 'Non-Authoritative Information', 204 => 'No Content', 205 => 'Reset Content', 206 => 'Partial Content', 207 => 'Multi-status', 208 => 'Already Reported',
         300 => 'Multiple Choices', 301 => 'Moved Permanently', 302 => 'Found', 303 => 'See Other', 304 => 'Not Modified', 305 => 'Use Proxy', 306 => 'Switch Proxy', 307 => 'Temporary Redirect',
@@ -39,7 +39,7 @@ class Response implements ResponseInterface
      * @param string $version Protocol version
      * @param string|null $reason Reason phrase (when empty a default will be used based on the status code)
      */
-    public function __construct(int $status = 200, array $headers = [], $body = null, string $version = '1.1', string $reason = null)
+    public function __construct($status = 200, $headers = [], $body = null, $version = '1.1', $reason = null)
     {
         // If we got no body, defer initialization of the stream until Response::getBody()
         if ('' !== $body && null !== $body) {
@@ -57,17 +57,28 @@ class Response implements ResponseInterface
         $this->protocol = $version;
     }
 
-    public function getStatusCode(): int
+    /**
+     * @return int
+     */
+    public function getStatusCode()
     {
         return $this->statusCode;
     }
 
-    public function getReasonPhrase(): string
+    /**
+     * @return string
+     */
+    public function getReasonPhrase()
     {
         return $this->reasonPhrase;
     }
 
-    public function withStatus($code, $reasonPhrase = ''): self
+    /**
+     * @param  int $code
+     * @param  string $reasonPhrase
+     * @return self
+     */
+    public function withStatus($code, $reasonPhrase = '')
     {
         if (!\is_int($code) && !\is_string($code)) {
             throw new \InvalidArgumentException('Status code has to be an integer');

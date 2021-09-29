@@ -29,12 +29,19 @@ trait MessageTrait
     /** @var StreamInterface|null */
     private $stream;
 
-    public function getProtocolVersion(): string
+    /**
+     * @return string
+     */
+    public function getProtocolVersion()
     {
         return $this->protocol;
     }
 
-    public function withProtocolVersion($version): self
+    /**
+     * @param  string $version
+     * @return self
+     */
+    public function withProtocolVersion($version)
     {
         if ($this->protocol === $version) {
             return $this;
@@ -46,17 +53,28 @@ trait MessageTrait
         return $new;
     }
 
-    public function getHeaders(): array
+    /**
+     * @return array
+     */
+    public function getHeaders()
     {
         return $this->headers;
     }
 
-    public function hasHeader($header): bool
+    /**
+     * @param  string $header
+     * @return bool
+     */
+    public function hasHeader($header)
     {
         return isset($this->headerNames[\strtr($header, 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz')]);
     }
 
-    public function getHeader($header): array
+    /**
+     * @param  string $header
+     * @return array
+     */
+    public function getHeader($header)
     {
         $header = \strtr($header, 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz');
         if (!isset($this->headerNames[$header])) {
@@ -68,12 +86,21 @@ trait MessageTrait
         return $this->headers[$header];
     }
 
-    public function getHeaderLine($header): string
+    /**
+     * @param  string $header
+     * @return string
+     */
+    public function getHeaderLine($header)
     {
         return \implode(', ', $this->getHeader($header));
     }
 
-    public function withHeader($header, $value): self
+    /**
+     * @param  string $header
+     * @param  string|string[] $value
+     * @return self
+     */
+    public function withHeader($header, $value)
     {
         $value = $this->validateAndTrimHeader($header, $value);
         $normalized = \strtr($header, 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz');
@@ -88,7 +115,12 @@ trait MessageTrait
         return $new;
     }
 
-    public function withAddedHeader($header, $value): self
+    /**
+     * @param  string $header
+     * @param  string|string[] $value
+     * @return self
+     */
+    public function withAddedHeader($header, $value)
     {
         if (!\is_string($header) || '' === $header) {
             throw new \InvalidArgumentException('Header name must be an RFC 7230 compatible string.');
@@ -100,7 +132,11 @@ trait MessageTrait
         return $new;
     }
 
-    public function withoutHeader($header): self
+    /**
+     * @param  string $header
+     * @return self
+     */
+    public function withoutHeader($header)
     {
         $normalized = \strtr($header, 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz');
         if (!isset($this->headerNames[$normalized])) {
@@ -114,7 +150,10 @@ trait MessageTrait
         return $new;
     }
 
-    public function getBody(): StreamInterface
+    /**
+     * @return StreamInterface
+     */
+    public function getBody()
     {
         if (null === $this->stream) {
             $this->stream = Stream::create('');
@@ -123,7 +162,11 @@ trait MessageTrait
         return $this->stream;
     }
 
-    public function withBody(StreamInterface $body): self
+    /**
+     * @param  StreamInterface $body
+     * @return self
+     */
+    public function withBody(StreamInterface $body)
     {
         if ($body === $this->stream) {
             return $this;
@@ -135,7 +178,11 @@ trait MessageTrait
         return $new;
     }
 
-    private function setHeaders(array $headers): void
+    /**
+     * @param array $headers
+     * @return void
+     */
+    private function setHeaders(array $headers)
     {
         foreach ($headers as $header => $value) {
             if (\is_int($header)) {
@@ -172,8 +219,11 @@ trait MessageTrait
      * field-value  = *( ( %x21-7E / %x80-FF ) [ 1*( SP / HTAB ) ( %x21-7E / %x80-FF ) ] )
      *
      * @see https://tools.ietf.org/html/rfc7230#section-3.2.4
+     * @param string $header
+     * @param string|string[] $values
+     * @return array
      */
-    private function validateAndTrimHeader($header, $values): array
+    private function validateAndTrimHeader($header, $values)
     {
         if (!\is_string($header) || 1 !== \preg_match("@^[!#$%&'*+.^_`|~0-9A-Za-z-]+$@", $header)) {
             throw new \InvalidArgumentException('Header name must be an RFC 7230 compatible string.');

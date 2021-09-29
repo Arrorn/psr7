@@ -44,7 +44,7 @@ class ServerRequest implements ServerRequestInterface
      * @param string $version Protocol version
      * @param array $serverParams Typically the $_SERVER superglobal
      */
-    public function __construct(string $method, $uri, array $headers = [], $body = null, string $version = '1.1', array $serverParams = [])
+    public function __construct($method, $uri, array $headers = [], $body = null, $version = '1.1', array $serverParams = [])
     {
         $this->serverParams = $serverParams;
 
@@ -67,16 +67,26 @@ class ServerRequest implements ServerRequestInterface
         }
     }
 
+    /**
+     * @return array
+     */
     public function getServerParams(): array
     {
         return $this->serverParams;
     }
 
+    /**
+     * @return array
+     */
     public function getUploadedFiles(): array
     {
         return $this->uploadedFiles;
     }
 
+    /**
+     * @param  array  $uploadedFiles
+     * @return self
+     */
     public function withUploadedFiles(array $uploadedFiles)
     {
         $new = clone $this;
@@ -85,11 +95,18 @@ class ServerRequest implements ServerRequestInterface
         return $new;
     }
 
-    public function getCookieParams(): array
+    /**
+     * @return array
+     */
+    public function getCookieParams()
     {
         return $this->cookieParams;
     }
 
+    /**
+     * @param  array  $cookies
+     * @return self
+     */
     public function withCookieParams(array $cookies)
     {
         $new = clone $this;
@@ -98,11 +115,18 @@ class ServerRequest implements ServerRequestInterface
         return $new;
     }
 
-    public function getQueryParams(): array
+    /**
+     * @return array
+     */
+    public function getQueryParams()
     {
         return $this->queryParams;
     }
 
+    /**
+     * @param  array  $query
+     * @return self
+     */
     public function withQueryParams(array $query)
     {
         $new = clone $this;
@@ -111,11 +135,18 @@ class ServerRequest implements ServerRequestInterface
         return $new;
     }
 
+    /**
+     * @return null|array|object
+     */
     public function getParsedBody()
     {
         return $this->parsedBody;
     }
 
+    /**
+     * @param  null|array|object $data
+     * @return self
+     */
     public function withParsedBody($data)
     {
         if (!\is_array($data) && !\is_object($data) && null !== $data) {
@@ -128,12 +159,16 @@ class ServerRequest implements ServerRequestInterface
         return $new;
     }
 
-    public function getAttributes(): array
+    /**
+     * @return array
+     */
+    public function getAttributes()
     {
         return $this->attributes;
     }
 
     /**
+     * @param string $name
      * @return mixed
      */
     public function getAttribute($attribute, $default = null)
@@ -145,7 +180,12 @@ class ServerRequest implements ServerRequestInterface
         return $this->attributes[$attribute];
     }
 
-    public function withAttribute($attribute, $value): self
+    /**
+     * @param  string $attribute
+     * @param  mixed $value
+     * @return self
+     */
+    public function withAttribute($attribute, $value)
     {
         $new = clone $this;
         $new->attributes[$attribute] = $value;
@@ -153,6 +193,10 @@ class ServerRequest implements ServerRequestInterface
         return $new;
     }
 
+    /**
+     * @param  string $attribute
+     * @return self
+     */
     public function withoutAttribute($attribute): self
     {
         if (false === \array_key_exists($attribute, $this->attributes)) {
